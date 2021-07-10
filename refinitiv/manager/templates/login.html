@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Refinitiv</title>
+	<!-- <link rel="shortcut icon" type="image/png" href="/images/aipc-logo.png" class="logo"> -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+<div class="col-lg-4 col-ms-4 col-sm-2"></div>
+<div class="box col-lg-4 col-ms-4 col-sm-6 col-xs-12" id="login_box">
+    <h1>login</h1>
+    <form action="/hq/loginSubmit/" method="post" enctype="multipart/form-data" >{% csrf_token %}
+        <input type="email" name="email" placeholder="Email Address" class="login-text"><br>
+        <input type="password" name="password" placeholder="Password" class="login-text"><br>
+        <button type="submit" class="btn btn-info login-btn">Login</button>
+    </form>
+</div>
+</body>
+</html>

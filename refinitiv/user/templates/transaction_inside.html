@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Refinitiv</title>
+	<!-- <link rel="shortcut icon" type="image/png" href="/images/aipc-logo.png" class="logo"> -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+	<header class="user_header"><a href="/"><h1>Refinitiv Forex</h1></a></header>
+	<div class="row" id="previous_data">
+		<div class="col-lg-3 col-md-3"></div>
+		<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+			<h3>Transaction Details:</h3>
+			<label>Transaction id:</label>
+			<label>{{data.transaction_id}}</label><br>
+			<label>Date & Time:</label>
+			<label>{{data.timestamp}}</label><br>
+			<label>Client Name:</label>
+			<label>{{data.name}}</label><br>
+			<label>Position:</label>
+			<label>{{data.position}}</label><br>
+			<label>Currency:</label>
+			<label>{{data.currency}}</label><br>
+			<label>FX Rate from HQ:</label>
+			<label>{{data.fx_rate_hq}}</label><br>
+			<label>FX Rate after applying spread:</label>
+			<label>{{data.fx_rate_spread}}</label><br>
+			<label>Amount: </label>
+			<label>{{data.amount}}</label><br>
+			<label>Branch id:</label>
+			<label>{{data.branch_id}}</label><br>
+			<label>Comments:</label>
+			<label>{{data.comments}}</label><br>
+			<label>Status:</label>
+            {% ifequal data.status 0 %}
+			<label>Pending</label>
+            {% endifequal %}
+            {% ifequal data.status 1 %}
+			<label>Accepted</label>
+            {% endifequal %}
+            {% ifequal data.status 2 %}
+			<label>Rejected</label>
+            {% endifequal %}
+		</div>
+	</div>
+    {% ifequal data.status 2 %}
+	<div class="row">
+		<div class="col-lg-3 col-md-3"></div>
+		<div class="box col-lg-6 col-md-6 col-sm-12 col-xs-12" id="request_form">
+			<p>Edit and re-initiate the transaction</p>
+			<form action="/editRequest/" method="post" enctype="multipart/form-data" >{% csrf_token %}
+                <input type="hidden" name="id" value="{{data.transaction_id}}">
+				<label>Name:</label>
+				<input type="text" name="name" value="{{data.name}}"><br>
+				<label>Position:</label>
+				<select name="position">
+					<option value="Buy" selected="selected">Buy</option>
+					<option value="Sell">Sell</option>
+				</select><br>
+				<label>Currency:</label>
+				<select name="currency">
+					{% for rate in rates %}
+					<option value="{{rate.currency}}">{{rate.currency}}</option>
+                    {% endfor %}
+				</select><br>
+				<label>Amount: </label>
+				<input type="number" name="amount" value="{{data.amount}}"><br>
+				<label>Branch: </label>
+				<select name="branch">
+					{% for branch in branches %}
+					<option value="{{branch.branch_id}}">{{branch.name}}</option>
+                    {% endfor %}
+				</select><br>
+				<button type="submit" class="btn btn-success">Submit</button>
+			</form>
+		</div>
+	</div>
+    {% endifequal %}
+</body>
+</html>

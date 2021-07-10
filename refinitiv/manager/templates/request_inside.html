@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Refinitiv</title>
+	<!-- <link rel="shortcut icon" type="image/png" href="/images/aipc-logo.png" class="logo"> -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+	<header>
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+				<a href="/hq/"><h1>Refinitiv Forex</h1></a>
+			</div>
+			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" id="btn_div">
+				<button type="button" data-toggle="modal" data-target="#myModal">
+					<i class="fa fa-user-plus" aria-hidden="true"></i>
+				</button>
+				<button type="button" data-toggle="modal" data-target="#upload">
+					<i class="fa fa-upload" aria-hidden="true"></i>
+				</button>
+				<i class="fa fa-envelope" aria-hidden="true"></i><sup>{{count}}</sup>
+				<a href="/hq/report"><i class="fa fa-file-text" aria-hidden="true"></i></a>
+				<a href="/hq/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+			</div>
+		</div>
+	</header>
+	<!-- Add User -->
+	<div id="myModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Add New User</h4>
+				</div>
+				<div class="modal-body">
+					<form action="/hq/addUser/" method="post" enctype="multipart/form-data" >{% csrf_token %}
+						<input type="text" name="name" placeholder="Enter Name"><br>
+						<input type="email" name="email" placeholder="Enter Email Address"><br>
+						<input type="password" name="password" placeholder="Enter Password"><br>
+						<button class="btn btn-success" type="submit">Submit</button>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Add User -->
+	<!-- Upload -->
+	<div id="upload" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Upload Rates/Branches Info</h4>
+				</div>
+				<div class="modal-body">
+					<form  action="/hq/uploadInfo/" method="post" enctype="multipart/form-data" >{% csrf_token %}
+						<input type="file" name="file"><br>
+						<button class="btn btn-success" type="submit">Submit</button>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Upload -->
+    <!-- reject -->
+	<div id="reject" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Upload Rates/Branches Info</h4>
+				</div>
+				<div class="modal-body">
+					<form action="/hq/requestResponse/" method="post" enctype="multipart/form-data" style="display: inline-block;">{% csrf_token %}
+                        <input type="hidden" name="id" value="{{data.transaction_id}}">
+                        <input type="hidden" name="status" value="2">
+                        <p>Enter your comments</p>
+                        <textarea name="comments" style="width: 350px; height: 80px; margin: 20px 0px;"></textarea><br>
+                        <button class="btn btn-danger">Reject</button>
+                    </form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- reject -->
+	<div class="row" id="request_inside">
+		<div class="col-lg-3 col-md-3 col-sm-1"></div>
+		<div class="col-lg-6 col-md-6 col-sm-10 col-xs-12">
+			<label>Transaction id:</label>
+			<label>{{data.transaction_id}}</label><br>
+			<label>Date & Time:</label>
+			<label>{{data.timestamp}}</label><br>
+			<label>Client Name:</label>
+			<label>{{data.name}}</label><br>
+			<label>Position:</label>
+			<label>{{data.position}}</label><br>
+			<label>Currency:</label>
+			<label>{{data.currency}}</label><br>
+			<label>FX Rate from HQ:</label>
+			<label>{{data.fx_rate_hq}}</label><br>
+			<label>FX Rate after applying spread:</label>
+			<label>{{data.fx_rate_spread}}</label><br>
+			<label>Amount: </label>
+			<label>{{data.amount}}</label><br>
+			<label>Branch id:</label>
+			<label>{{data.branch_id}}</label><br>
+            {% ifequal data.status 2 %}
+            <label>Comments:</label>
+			<label>{{data.comments}}</label><br>
+            {% endifequal %}
+            <label>Status:</label>
+            {% ifequal data.status 0 %}
+			<label>Pending</label>
+            {% endifequal %}
+            {% ifequal data.status 1 %}
+			<label>Accepted</label>
+            {% endifequal %}
+            {% ifequal data.status 2 %}
+			<label>Rejected</label>
+            {% endifequal %}
+            {% ifequal data.status 0 %}
+            <br>
+            <form action="/hq/requestResponse/" method="post" enctype="multipart/form-data" style="display: inline-block;">{% csrf_token %}
+                <input type="hidden" name="id" value="{{data.transaction_id}}">
+                <input type="hidden" name="status" value="1">
+                <input type="hidden" name="comments" value="----">
+			    <button type="submit" class="btn btn-success">Accept</button>
+            </form>
+            <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#reject">Reject</button>
+            {% endifequal %}
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Refinitiv</title>
+	<!-- <link rel="shortcut icon" type="image/png" href="/images/aipc-logo.png" class="logo"> -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+	<!-- rates -->
+	<div id="myModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Rates & Spread</h4>
+				</div>
+				<div class="modal-body">
+					<table>
+						<tr>
+							<th>Currency</th>
+							<th>Forex Rate</th>
+							<th>Spread</th>
+						</tr>
+                        {% for rate in rates %}
+						<tr>
+							<td>{{rate.currency}}</td>
+							<td>{{rate.rate}}</td>
+							<td>{{rate.spread}}</td>
+						</tr>
+                        {% endfor %}
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- rates -->
+	<!-- branches -->
+	<div id="branches" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Rates & Spread</h4>
+				</div>
+				<div class="modal-body">
+					<table>
+						<tr>
+							<th>Branch ID</th>
+							<th>Branch Name</th>
+							<th>Address</th>
+							<th>City</th>
+							<th>ZIP</th>
+							<th>Country</th>
+							<th>Tel</th>
+						</tr>
+                        {% for branch in branches %}
+						<tr>
+							<td>{{branch.branch_id}}</td>
+							<td>{{branch.name}}</td>
+							<td>{{branch.address_line1}}<br>{{branch.address_line2}}<br>{{branch.address_line3}}</td>
+							<td>{{branch.city}}</td>
+							<td>{{branch.zip}}</td>
+							<td>{{branch.country}}</td>
+							<td>{{branch.tel}}</td>
+						</tr>
+                        {% endfor %}
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- branches -->
+	<header class="user_header"><a href="/"><h1>Refinitiv Forex</h1></a></header>
+	<div id="user_body">
+		<h2>Refinitiv Forex Request Form</h2>
+		<p>Check the rates and spread of each currency: <button class="btn btn-info" type="button" data-toggle="modal" data-target="#myModal">Check</button></p>
+		<p>Check the available branches info: <button class="btn btn-info" type="button" data-toggle="modal" data-target="#branches">Check</button></p>
+		<p>Enter the below details to intitiate transaction</p>
+		<div class="col-lg-3 col-md-3"></div>
+		<div class="box col-lg-6 col-md-6 col-sm-12 col-xs-12" id="request_form">
+			<form action="/requestSubmit/" method="post" enctype="multipart/form-data" >{% csrf_token %}
+				<label>Name:</label>
+				<input type="text" name="name"><br>
+				<label>Position:</label>
+				<select name="position">
+					<option value="Buy" selected="selected">Buy</option>
+					<option value="Sell">Sell</option>
+				</select><br>
+				<label>Currency:</label>
+				<select name="currency">
+                    {% for rate in rates %}
+					<option value="{{rate.currency}}">{{rate.currency}}</option>
+                    {% endfor %}
+				</select><br>
+				<label>Amount: </label>
+				<input type="number" name="amount"><br>
+				<label>Branch: </label>
+				<select name="branch">
+                    {% for branch in branches %}
+					<option value="{{branch.branch_id}}">{{branch.name}}</option>
+                    {% endfor %}
+				</select><br>
+				<button type="submit" class="btn btn-success">Submit</button>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

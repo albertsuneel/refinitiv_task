@@ -1,0 +1,1 @@
+$(function(){$("#previous_btn").click(function(){$("#previous").toggle();});$("#index_enter_btn").click(function(){window.location='/transactionInside/?transaction_id='+$("#index_transaction_id").val();});});

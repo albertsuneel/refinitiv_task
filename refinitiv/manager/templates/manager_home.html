@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Refinitiv</title>
+	<!-- <link rel="shortcut icon" type="image/png" href="/images/aipc-logo.png" class="logo"> -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+	<header>
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+				<a href="/hq"><h1>Refinitiv Forex</h1></a>
+			</div>
+			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" id="btn_div">
+				<button type="button" data-toggle="modal" data-target="#myModal">
+					<i class="fa fa-user-plus" aria-hidden="true"></i>
+				</button>
+				<button type="button" data-toggle="modal" data-target="#upload">
+					<i class="fa fa-upload" aria-hidden="true"></i>
+				</button>
+				<i class="fa fa-envelope" aria-hidden="true"></i><sup>{{count}}</sup>
+				<a href="/hq/report"><i class="fa fa-file-text" aria-hidden="true"></i></a>
+				<a href="/hq/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+			</div>
+		</div>
+	</header>
+	<!-- Add User -->
+	<div id="myModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Add New User</h4>
+				</div>
+				<div class="modal-body">
+					<form action="/hq/addUser/" method="post" enctype="multipart/form-data" >{% csrf_token %}
+						<input type="text" name="name" placeholder="Enter Name"><br>
+						<input type="email" name="email" placeholder="Enter Email Address"><br>
+						<input type="password" name="password" placeholder="Enter Password"><br>
+						<button class="btn btn-success" type="submit">Submit</button>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Add User -->
+	<!-- Upload -->
+	<div id="upload" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Upload Rates/Branches Info</h4>
+				</div>
+				<div class="modal-body">
+					<form  action="/hq/uploadInfo/" method="post" enctype="multipart/form-data" >{% csrf_token %}
+						<input type="file" name="file"><br>
+						<button class="btn btn-success" type="submit">Submit</button>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Upload -->
+	<div class="row" id="body">
+        <h4 style="margin-left: 15px;">Hello, {{user.name}}!</h4>
+		<div class="col-lg-9 col-md-9 col-sm-6 col-xs-12">
+			<div class="box request_box">
+				<h3>Pending Requests</h3>
+				{% for request in requests %}
+                {% ifequal request.status 0 %}
+				<a href="/hq/requestInside?transaction_id={{request.transaction_id}}"><p>Mr. {{request.name}} requested a {{request.position}} transaction</p></a>
+                {% endifequal %}
+                {% endfor %}
+			</div>
+			<div class="box request_box">
+				<h3>Rejected Requests</h3>
+				{% for request in requests %}
+                {% ifequal request.status 2 %}
+				<a href="/hq/requestInside?transaction_id={{request.transaction_id}}"><p>Mr. {{request.name}} requested a {{request.position}} transaction</p></a>
+                {% endifequal %}
+                {% endfor %}
+			</div>
+			<div class="box request_box">
+				<h3>Approved Requests</h3>
+				{% for request in requests %}
+                {% ifequal request.status 1 %}
+				<a href="/hq/requestInside?transaction_id={{request.transaction_id}}"><p>Mr. {{request.name}} requested a {{request.position}} transaction</p></a>
+                {% endifequal %}
+                {% endfor %}
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+			<div class="box">
+				<h3>Requests</h3>
+				<p>Total No. of requests: {{all}}</p>
+				<p>No. of requests approved: {{accepted}}</p>
+				<p>No. of requests rejected: {{rejected}}</p>
+				<p>No. of requests pending: {{pending}}</p>
+			</div>
+			<div class="box">
+				<h3>Transactions</h3>
+				<p>Total transactions: {{accepted}}</p>
+				<p>Total BUY transactions: {{buy}}</p>
+				<p>Total SELL transactions: {{sell}}</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
